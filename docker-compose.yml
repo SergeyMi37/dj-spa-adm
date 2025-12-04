@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  appmsw:
+    container_name: appmsw
+    restart: always
+    build: .
+    env_file:
+      - ./.env
+    networks:
+      - db_network
+      - web_network
+  nginxs:
+    container_name: nginxs
+    restart: always
+    image: "nginx:latest"
+    ports:
+      - "5085:5085"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./staticfiles:/var/www/static
+    networks:
+      - web_network
+    depends_on:
+      - appmsw
+networks:
+  db_network:
+    driver: bridge
+  web_network:
+    driver: bridge

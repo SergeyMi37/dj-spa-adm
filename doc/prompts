@@ -1,0 +1,65 @@
+
+перенеси в
+core\settings.py
+определение переменной  IRIS_JARS
+из модулей
+D:\_proj\repo\jdbc\appmsw-django-adminlte\core\views.py
+D:\_proj\repo\jdbc\appmsw-django-adminlte\appmsw\iris.py
+
+Тестируй и реши проблемму:
+Если отдельная программа на питон выполняется без ошибок
+ python appmsw/test_jdbc_python.py
+
+А такой же код внутри проекта django
+метод get_postgresql_jdbc_cursor
+модуля 
+core\views.py
+ выдает ошибку
+Ошибка подключения к внешней БД: Ошибка подключения к PostgreSQL: Class org.postgresql.Driver is not found
+
+
+
+Исправить swagger 
+http://127.0.0.1:8000/api/docs/#/db-connections/db_connections_list 
+нужно иметь возможность тестировать подключение к postgres через инттерфейс swagger
+
+
+Тестируй и реши проблемму:
+Если отдельная программа на питон выполняется без ошибок
+ python appmsw/test_jdbc_python.py
+
+А такой же код внутри проекта django
+метод get_postgresql_jdbc_cursor
+модуля 
+core\views.py
+ выдает ошибку
+Ошибка подключения к внешней БД: Ошибка подключения к PostgreSQL: Class org.postgresql.Driver is not found
+
+
+
+Исправить swagger 
+http://127.0.0.1:8000/api/docs/#/db-connections/db_connections_list 
+нужно иметь возможность тестировать подключение к postgres через инттерфейс swagger
+
+
+http://127.0.0.1:8000/api/docs/#/db-connections/db_connections_test_connection_create
+
+Написать модули тестирование CRUD настроек подключения внешних бд модель DbConnection для swagger на pytest
+Написать модули тестирование CRUD настроек подключения внешних бд модель DbConnection для интерфейса django на pytest
+
+
+Написать модули тестирование CRUD модели SysOption из интерфейса Ыwagger и интерфейса Django используя библиотеку pytest, добавить инструкцию по запуску
+Написать модули тестирование CRUD модели Param из интерфейса Swagger и интерфейса Django используя библиотеку pytest, добавить инструкцию по запуску
+Написать модули тестирование CRUD модели Comment из интерфейса Swagger и интерфейса Django используя библиотеку pytest, добавить инструкцию по запуску
+
+Создать компоненту SPA RagAssist в App и вызывать ее из бокового меню ...
+Написать модули RAG взяв за основу прогркмму .. и интеррировав в компоненту SPA RagAssist с подключением к ollama взяв настройку ollamma_url из записи SysOption 
+Реализовать интефейс Swagger эндпоинты для RagAssist 
+Написать тесты по функциони RagAssist из интерфейса Swagger и интерфейса Django используя библиотеку pytest, добавить инструкцию по запуску
+
+тестирование настроек полгключения внешних бд на pytest
+
+Реализовать хранинение историй ввода SQL запросов из компоненты spa\src\views\DbQueries.vue в моделе SysOption категрия "Application Parameters" опция "History" 
+под именами "History_SQL_TypeBD_UserName_Номер"
+
+Написать модули тестирование настроек полгключения внешних бд на pytest

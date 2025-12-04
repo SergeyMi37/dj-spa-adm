@@ -1,0 +1,8 @@
+{% load static %}
+<div id="app"></div>  <!-- Корневой элемент для SPA -->
+<script>    // Передача данных пользователя в Vue приложение    
+    window.currentUser = JSON.parse('{{ current_user|default:"null"|escapejs }}');
+</script>
+<script type="module" src="{% static 'spa/assets/index-2edf6da5.js' %}"></script>
+</body>
+</html>
