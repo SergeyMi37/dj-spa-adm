@@ -276,14 +276,16 @@
               <div v-if="message.role === 'user'" class="message-role">
                 <span class="icon-wrapper text-success"><i class="fas fa-user"></i> Вы </span>
                 <span class="message-time"> {{ formatTime(message.timestamp) }}</span>
+              <div class="icon-wrapper text-success">{{ message.content }}</div>
               </div>
               <div v-else class="message-role">
                 <span class="icon-wrapper text-warning"><i class="fas fa-robot"></i> Ассистент </span>
                 <span class="message-time"> {{ formatTime(message.timestamp) }}</span>
+              <div class="icon-wrapper text-warning">{{ message.content }}</div>
               </div>
             </div>
             </div>
-            <div class="message-content">
+            <!-- <div class="message-content">
               <div v-if="message.type === 'text'">{{ message.content }}</div>
               <div v-else-if="message.type === 'error'" class="text-danger">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -298,7 +300,7 @@
                 {{ message.content }}
                 <small class="text-muted">({{ message.filename }})</small>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

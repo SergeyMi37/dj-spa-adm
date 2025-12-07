@@ -2067,8 +2067,8 @@ class ChatRAGAPIView(APIView):
             
             result = response.json()
             
-            logger.info(f"ChatRAG POST: Полный JSON ответ от Ollama:")
-            logger.info(json_module.dumps(result, ensure_ascii=False, indent=2, default=str))
+            logger.info(f"ChatRAG POST: Полный JSON ответ от Ollama:..отключено пока...")
+            # logger.info(json_module.dumps(result, ensure_ascii=False, indent=2, default=str))
             
             answer = result.get('response', 'Извините, не удалось получить ответ от модели.')
             
@@ -2091,11 +2091,10 @@ class ChatRAGAPIView(APIView):
             logger.info(f"ChatRAG POST: Статистика Ollama:")
             for key, value in ollama_stats.items():
                 if value is not None:
-                    logger.info(f"  - {key}: {value}")
+                    if key != 'context':
+                        logger.info(f"  - {key}: {value}")
             
-            logger.info("=" * 80)
             logger.info("ChatRAG POST: ЗАВЕРШЕНИЕ ОБРАБОТКИ ЗАПРОСА (УСПЕХ)")
-            logger.info("=" * 80)
             
             return JsonResponse({
                 'answer': answer,
