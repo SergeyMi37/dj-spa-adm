@@ -248,8 +248,61 @@ python manage.py model_import --model sysoption --file sysotiom.csv --format csv
 
 #  Импорт модели из файла json в режиме --dry-run - сухой запуск, без реального импорта:
 python manage.py model_import --model SysOption --file sysotion.json --format json --import 1 --dry-run
-
 #  Импорт модели из файла json:
 python manage.py model_import --model SysOption --file sysotion.json --format json --import 1
+
+## Тестирование подключения к Oracle по JDBC
+
+Для тестирования подключения к Oracle по JDBC используется команда Django. Убедитесь, что установлены необходимые зависимости, включая JPype1 для взаимодействия с JVM.
+
+### Установка зависимостей
+
+```bash
+pip install JPype1
+```
+### Запуск теста подключения
+
+```bash
+python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT 1 FROM DUAL"
+```
+
+Параметры команды:
+- `--url` - JDBC URL для подключения к Oracle (по умолчанию: jdbc:oracle:thin:@localhost:1521:xe)
+- `--username` - Имя пользователя Oracle (по умолчанию: your_username)
+- `--password` - Пароль пользователя Oracle (по умолчанию: your_password)
+- `--sql` - SQL-запрос для выполнения (по умолчанию: SELECT 1 FROM DUAL)
+Команда использует драйвер Oracle ojdbc6.jar, расположенный в папке appmsw/java/
+
+### Примеры запросов к Oracle
+
+Для получения информации о параметрах СУБД Oracle можно использовать следующие запросы:
+
+1. Получение основной информации о параметрах СУБД:
+```bash
+python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT name, value, description FROM v\$parameter ORDER BY name"
+```
+
+2. Получение информации о версии Oracle:
+```bash
+python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT banner FROM v\$version"
+```
+
+3. Получение информации о сессиях пользователей:
+```bash
+python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT sid, serial#, username, status, osuser, machine, program FROM v\$session WHERE type = 'USER' ORDER BY sid"
+```
+
+4. Получение информации о таблицах текущего пользователя:
+```bash
+python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT table_name, num_rows, last_analyzed FROM user_tables ORDER BY table_name"
+```
+
+5. Получение информации о размере таблиц:
+```bash
+python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT segment_name, ROUND(bytes/1024/1024, 2) AS size_mb FROM user_segments WHERE segment_type = 'TABLE' ORDER BY bytes DESC"
+```
+
+
+
 
 ```
