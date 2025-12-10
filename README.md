@@ -285,6 +285,122 @@ python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --us
 2. Получение информации о версии Oracle:
 ```bash
 python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT banner FROM v\$version"
+## Тестирование подключения к PostgreSQL по JDBC
+
+Для тестирования подключения к PostgreSQL по JDBC используется команда Django. Убедитесь, что установлены необходимые зависимости, включая JPype1 для взаимодействия с JVM.
+
+### Установка зависимостей
+
+```bash
+pip install JPype1
+```
+
+### Запуск теста подключения
+
+```bash
+python manage.py test_postgres_jdbc --url jdbc:postgresql://localhost:5432/postgres --username postgres --password postgres --sql "SELECT 1"
+```
+
+Параметры команды:
+- `--url` - JDBC URL для подключения к PostgreSQL (по умолчанию: jdbc:postgresql://localhost:5432/postgres)
+- `--username` - Имя пользователя PostgreSQL (по умолчанию: postgres)
+- `--password` - Пароль пользователя PostgreSQL (по умолчанию: postgres)
+- `--sql` - SQL-запрос для выполнения (по умолчанию: SELECT 1)
+
+Команда использует драйвер PostgreSQL postgresql-42.7.8.jar, расположенный в папке appmsw/java/
+
+### Примеры запросов к PostgreSQL
+
+1. Получение информации о версии PostgreSQL:
+```bash
+python manage.py test_postgres_jdbc --url jdbc:postgresql://localhost:5432/postgres --username postgres --password postgres --sql "SELECT version()"
+```
+
+2. Получение списка баз данных:
+```bash
+python manage.py test_postgres_jdbc --url jdbc:postgresql://localhost:5432/postgres --username postgres --password postgres --sql "SELECT datname FROM pg_database"
+```
+
+3. Получение информации о таблицах:
+```bash
+python manage.py test_postgres_jdbc --url jdbc:postgresql://localhost:5432/postgres --username postgres --password postgres --sql "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
+```
+
+## Тестирование подключения к IRIS по JDBC
+
+Для тестирования подключения к IRIS по JDBC используется команда Django. Убедитесь, что установлены необходимые зависимости, включая JPype1 для взаимодействия с JVM.
+
+### Установка зависимостей
+
+```bash
+pip install JPype1
+```
+
+### Запуск теста подключения
+
+```bash
+python manage.py test_iris_jdbc --url jdbc:IRIS://localhost:1972/USER --username _SYSTEM --password SYS --sql "SELECT 1"
+```
+
+Параметры команды:
+- `--url` - JDBC URL для подключения к IRIS (по умолчанию: jdbc:IRIS://localhost:1972/USER)
+- `--username` - Имя пользователя IRIS (по умолчанию: _SYSTEM)
+- `--password` - Пароль пользователя IRIS (по умолчанию: SYS)
+- `--sql` - SQL-запрос для выполнения (по умолчанию: SELECT 1)
+
+Команда использует драйвер IRIS intersystems-jdbc-3.7.1.jar, расположенный в папке appmsw/java/
+
+### Примеры запросов к IRIS
+
+1. Получение информации о версии IRIS:
+```bash
+python manage.py test_iris_jdbc --url jdbc:IRIS://localhost:1972/USER --username _SYSTEM --password SYS --sql "SELECT $ZVERSION"
+```
+
+2. Получение списка таблиц:
+```bash
+python manage.py test_iris_jdbc --url jdbc:IRIS://localhost:1972/USER --username _SYSTEM --password SYS --sql "SELECT Name FROM %Dictionary.CompiledClass WHERE ClassType = 'persistent'"
+```
+
+3. Выполнение произвольного SQL запроса:
+```bash
+python manage.py test_iris_jdbc --url jdbc:IRIS://localhost:1972/USER --username _SYSTEM --password SYS --sql "SELECT TOP 10 * FROM SQLUser.MyTable"
+```
+
+## Тестирование подключения к Oracle по JDBC
+
+### Установка зависимостей
+
+```bash
+pip install JPype1
+```
+
+### Запуск теста подключения
+
+```bash
+python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT 1 FROM DUAL"
+```
+
+Параметры команды:
+- `--url` - JDBC URL для подключения к Oracle (по умолчанию: jdbc:oracle:thin:@localhost:1521:xe)
+- `--username` - Имя пользователя Oracle (по умолчанию: your_username)
+- `--password` - Пароль пользователя Oracle (по умолчанию: your_password)
+- `--sql` - SQL-запрос для выполнения (по умолчанию: SELECT 1 FROM DUAL)
+
+Команда использует драйвер Oracle ojdbc6.jar, расположенный в папке appmsw/java/
+
+### Примеры запросов к Oracle
+
+Для получения информации о параметрах СУБД Oracle можно использовать следующие запросы:
+
+1. Получение основной информации о параметрах СУБД:
+```bash
+python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT name, value, description FROM v\$parameter ORDER BY name"
+```
+
+2. Получение информации о версии Oracle:
+```bash
+python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT banner FROM v\$version"
 ```
 
 3. Получение информации о сессиях пользователей:
