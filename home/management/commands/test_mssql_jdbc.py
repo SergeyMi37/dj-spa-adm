@@ -4,17 +4,17 @@ import jpype.imports
 from jpype.types import *
 
 class Command(BaseCommand):
-    help = 'Тест выполнения SQL в IRIS по JDBC'
+    help = 'Тест выполнения SQL в MS SQL Server по JDBC'
 
     def add_arguments(self, parser):
-        parser.add_argument('--url', type=str, default='jdbc:IRIS://localhost:1972/USER', help='JDBC URL для подключения к IRIS')
-        parser.add_argument('--username', type=str, default='_SYSTEM', help='Имя пользователя IRIS')
-        parser.add_argument('--password', type=str, default='SYS', help='Пароль пользователя IRIS')
-        parser.add_argument('--sql', type=str, default='SELECT $zv', help='SQL-запрос для выполнения (по умолчанию: SELECT 1)')
+        parser.add_argument('--url', type=str, default='jdbc:sqlserver://localhost:1433;databaseName=master;encrypt=false;trustServerCertificate=true', help='JDBC URL для подключения к MS SQL Server')
+        parser.add_argument('--username', type=str, default='sa', help='Имя пользователя MS SQL Server')
+        parser.add_argument('--password', type=str, default='your_password', help='Пароль пользователя MS SQL Server')
+        parser.add_argument('--sql', type=str, default='SELECT 1', help='SQL-запрос для выполнения (по умолчанию: SELECT 1)')
 
     def handle(self, *args, **options):
-        # Путь к драйверу IRIS
-        jar_path = 'appmsw/java/intersystems-jdbc-3.7.1.jar'
+        # Путь к драйверу MS SQL Server
+        jar_path = 'appmsw/java/sqljdbc42.jar'
 
         # Запуск JVM с указанием пути к драйверу
         if not jpype.isJVMStarted():
@@ -25,17 +25,24 @@ class Command(BaseCommand):
             from java.sql import DriverManager, SQLException
             from java.lang import Class
 
-            # Загрузка драйвера IRIS
-            Class.forName("com.intersystems.jdbc.IRISDriver")
+            # Загрузка драйвера MS SQL Server
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver")
+
+            # Отключение SSL/TLS шифрования
+            from java.lang import System
+            System.setProperty("javax.net.ssl.trustStore", "")
+            System.setProperty("javax.net.ssl.trustStoreType", "Windows-ROOT")
+            System.setProperty("java.security.enabledAlgorithms", "TLSv1,TLSv1.1,TLSv1.2")
+            System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2")
 
             # Подключение к базе данных
             url = options['url']
             username = options['username']
             password = options['password']
 
-            self.stdout.write(f'Подключение к IRIS: {url}')
+            self.stdout.write(f'Подключение к MS SQL Server: {url}')
             conn = DriverManager.getConnection(url, username, password)
-            self.stdout.write('Соединение с IRIS установлено')
+            self.stdout.write('Соединение с MS SQL Server установлено')
 
             # Выполнение указанного SQL-запроса
             sql_query = options['sql']

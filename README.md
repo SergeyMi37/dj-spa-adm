@@ -421,4 +421,50 @@ python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --us
 
 
 
+
+## Тестирование подключения к MS SQL Server по JDBC
+
+Для тестирования подключения к MS SQL Server по JDBC используется команда Django. Убедитесь, что установлены необходимые зависимости, включая JPype1 для взаимодействия с JVM.
+
+### Установка зависимостей
+
+```bash
+pip install JPype1
+```
+
+### Запуск теста подключения
+
+```bash
+python manage.py test_mssql_jdbc --url jdbc:sqlserver://localhost:1433;databaseName=master --username sa --password your_password --sql "SELECT 1"
+```
+
+Параметры команды:
+- `--url` - JDBC URL для подключения к MS SQL Server (по умолчанию: jdbc:sqlserver://localhost:1433;databaseName=master)
+- `--username` - Имя пользователя MS SQL Server (по умолчанию: sa)
+- `--password` - Пароль пользователя MS SQL Server (по умолчанию: your_password)
+- `--sql` - SQL-запрос для выполнения (по умолчанию: SELECT 1)
+
+Команда использует драйвер MS SQL Server sqljdbc42.jar, расположенный в папке appmsw/java/
+
+### Примеры запросов к MS SQL Server
+
+1. Получение информации о версии MS SQL Server:
+```bash
+python manage.py test_mssql_jdbc --url jdbc:sqlserver://localhost:1433;databaseName=master --username sa --password your_password --sql "SELECT @@VERSION"
+```
+
+2. Получение списка баз данных:
+```bash
+python manage.py test_mssql_jdbc --url jdbc:sqlserver://localhost:1433;databaseName=master --username sa --password your_password --sql "SELECT name FROM sys.databases"
+```
+
+3. Получение информации о таблицах в текущей базе данных:
+```bash
+python manage.py test_mssql_jdbc --url jdbc:sqlserver://localhost:1433;databaseName=master --username sa --password your_password --sql "SELECT name FROM sys.tables"
+```
+
+4. Выполнение произвольного SQL запроса:
+```bash
+python manage.py test_mssql_jdbc --url jdbc:sqlserver://localhost:1433;databaseName=master --username sa --password your_password --sql "SELECT TOP 10 * FROM YourTable"
+```
 ```
