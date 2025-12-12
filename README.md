@@ -379,6 +379,9 @@ pip install JPype1
 
 ```bash
 python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --username your_username --password your_password --sql "SELECT 1 FROM DUAL"
+
+# Или по connect-id
+python manage.py test_oracle_jdbc_cid --connect-id 3 --sql "SELECT 1 FROM DUAL"
 ```
 
 Параметры команды:
@@ -386,6 +389,7 @@ python manage.py test_oracle_jdbc --url jdbc:oracle:thin:@localhost:1521:xe --us
 - `--username` - Имя пользователя Oracle (по умолчанию: your_username)
 - `--password` - Пароль пользователя Oracle (по умолчанию: your_password)
 - `--sql` - SQL-запрос для выполнения (по умолчанию: SELECT 1 FROM DUAL)
+- `--connect-id` - ID подключения из базы данных (если указан, используются параметры из БД)')
 
 Команда использует драйвер Oracle ojdbc6.jar, расположенный в папке appmsw/java/
 
