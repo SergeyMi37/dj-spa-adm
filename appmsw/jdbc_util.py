@@ -1,6 +1,8 @@
 """
 Утилиты для работы с Oracle JDBC
 Предоставляет универсальные функции для подключения к Oracle и выполнения SQL запросов
+Пример вызова:
+
 """
 
 import jpype
@@ -12,14 +14,16 @@ from django.core.management.base import BaseCommand
 class OracleJDBCUtil:
     """Утилита для работы с Oracle через JDBC"""
     
-    def __init__(self, jar_path='appmsw/java/ojdbc6.jar'):
+    def __init__(self, jar_path='appmsw/java/ojdbc6.jar', connect_id=None):
         """
         Инициализация утилиты Oracle JDBC
         
         Args:
             jar_path (str): Путь к JAR файлу драйвера Oracle
+            connect_id (int): ID подключения из модели DbConnection (если указан, параметры берутся из БД)
         """
         self.jar_path = jar_path
+        self.connect_id = connect_id
         self.connection = None
         self.statement = None
         self.result_set = None
@@ -28,7 +32,7 @@ class OracleJDBCUtil:
         if not jpype.isJVMStarted():
             jpype.startJVM(classpath=[self.jar_path])
     
-    def connect(self, url, username, password):
+    def connect(self, url=None, username=None, password=None, connect_id=None):
         """
         Подключение к Oracle database
         
@@ -36,6 +40,7 @@ class OracleJDBCUtil:
             url (str): JDBC URL для подключения
             username (str): Имя пользователя Oracle
             password (str): Пароль пользователя Oracle
+            connect_id (int): ID подключения из модели DbConnection (если указан, параметры берутся из БД)
             
         Returns:
             bool: True если подключение успешно, False иначе
@@ -44,6 +49,31 @@ class OracleJDBCUtil:
             # Импорт классов JDBC
             from java.sql import DriverManager, SQLException
             from java.lang import Class
+            
+            # Если указан connect_id, загружаем параметры из базы данных
+            if connect_id:
+                from appmsw.models import DbConnection
+                
+                try:
+                    db_conn = DbConnection.objects.get(id=connect_id, database_type='oracle', is_active=True)
+                    url = db_conn.connection_string
+                    username = db_conn.username
+                    password = db_conn.password
+                except DbConnection.DoesNotExist:
+                    print(f"Подключение с ID {connect_id} не найдено или не является активным подключением к Oracle")
+                    return False
+            elif self.connect_id:
+                # Если connect_id передан в конструкторе, используем его
+                from appmsw.models import DbConnection
+                
+                try:
+                    db_conn = DbConnection.objects.get(id=self.connect_id, database_type='oracle', is_active=True)
+                    url = db_conn.connection_string
+                    username = db_conn.username
+                    password = db_conn.password
+                except DbConnection.DoesNotExist:
+                    print(f"Подключение с ID {self.connect_id} не найдено или не является активным подключением к Oracle")
+                    return False
             
             # Загрузка драйвера Oracle
             Class.forName("oracle.jdbc.driver.OracleDriver")
@@ -85,7 +115,14 @@ class OracleJDBCUtil:
                 row = []
                 for i in range(1, columns_count + 1):
                     value = self.result_set.getObject(i)
-                    row.append(str(value) if value is not None else None)
+                    # Преобразуем java объекты в Python строки
+                    if value is not None:
+                        if hasattr(value, '__str__'):
+                            row.append(str(value))
+                        else:
+                            row.append(repr(value))
+                    else:
+                        row.append(None)
                 results.append(row)
             
             return results
@@ -181,7 +218,7 @@ def execute_oracle_query(url, username, password, sql_query):
                Возвращает (None, None) в случае ошибки
     """
     with OracleJDBCUtil() as oracle_util:
-        if not oracle_util.connect(url, username, password):
+        if not oracle_util.connect(url=url, username=username, password=password):
             return None, None
         
         results = oracle_util.execute_query(sql_query)
@@ -203,7 +240,7 @@ def test_oracle_connection(url, username, password):
         bool: True если подключение успешно, False иначе
     """
     with OracleJDBCUtil() as oracle_util:
-        return oracle_util.connect(url, username, password)
+        return oracle_util.connect(url=url, username=username, password=password)
 
 
 # Пример использования
@@ -217,15 +254,15 @@ if __name__ == "__main__":
     # Пример использования
     print("Тестирование подключения к Oracle...")
     
-    if test_oracle_connection(DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD):
+    if test_oracle_connection(url=DEFAULT_URL, username=DEFAULT_USERNAME, password=DEFAULT_PASSWORD):
         print("Подключение к Oracle успешно!")
         
         # Выполнение тестового запроса
         column_names, results = execute_oracle_query(
-            DEFAULT_URL, 
-            DEFAULT_USERNAME, 
-            DEFAULT_PASSWORD, 
-            DEFAULT_SQL
+            url=DEFAULT_URL,
+            username=DEFAULT_USERNAME,
+            password=DEFAULT_PASSWORD,
+            sql_query=DEFAULT_SQL
         )
         
         if results:
